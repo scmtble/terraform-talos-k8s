@@ -100,7 +100,7 @@ data "talos_machine_configuration" "control_plane" {
         }
         install : {
           disk : "/dev/sda"
-          image : "ccr.ccs.tencentyun.com/scmtble/installer:v1.11.0"
+          image : "ghcr.io/siderolabs/installer:v1.11.2"
           wipe : false
         }
         features : {

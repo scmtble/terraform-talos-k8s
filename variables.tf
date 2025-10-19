@@ -1,7 +1,7 @@
 # Talos
 variable "talos_version" {
   type    = string
-  default = "v1.11.0"
+  default = "v1.11.2"
 }
 variable "cluster_name" {
   type    = string
@@ -9,7 +9,7 @@ variable "cluster_name" {
 }
 variable "kubernetes_version" {
   type    = string
-  default = "v1.33.4"
+  default = "v1.34.1"
 }
 
 variable "cluster_endpoint" {

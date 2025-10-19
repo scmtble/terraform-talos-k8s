@@ -1,2 +1,4 @@
 tmp
 .terraform
+kubeconfig.yaml
+talosconfig
