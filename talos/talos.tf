@@ -1,23 +1,3 @@
-resource "talos_machine_secrets" "this" {
-  talos_version = var.talos_version
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "talos_cluster_kubeconfig" "this" {
-  client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = var.control_plane_instances[0].private_ip
-  endpoint             = var.control_plane_instances[0].public_ip
-}
-
-data "talos_client_configuration" "this" {
-  cluster_name         = var.cluster_name
-  client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints            = [for instance in var.control_plane_instances : instance.public_ip]
-}
-
 data "talos_machine_configuration" "control_plane" {
   for_each = { for instance in var.control_plane_instances : instance.name => instance }
 

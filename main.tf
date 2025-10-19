@@ -1,8 +1,8 @@
-terraform {
-  required_providers {
-    talos = {
-      source  = "siderolabs/talos"
-      version = "0.9.0"
-    }
-  }
+module "talos" {
+  source = "./talos"
+}
+
+module "k8s" {
+  source                   = "./k8s"
+  kubernetes_client_config = module.talos.kubernetes_client_config
 }
