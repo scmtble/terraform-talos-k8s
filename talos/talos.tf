@@ -13,17 +13,7 @@ data "talos_machine_configuration" "control_plane" {
   config_patches = [
     yamlencode({
       machine : {
-        certSANs : sort(
-          distinct(
-            compact(
-              concat(
-                [for instance in var.control_plane_instances : instance.private_ip],
-                ["127.0.0.1", "::1", "localhost"],
-                ["${var.cluster_endpoint}"],
-              )
-            )
-          )
-        )
+        certSANs : local.certSANs
         network : {
           hostname : "ip-${replace(each.value.private_ip, ".", "-")}.cn-wuhan-1.compute.internal"
           interfaces : [
@@ -63,24 +53,11 @@ data "talos_machine_configuration" "control_plane" {
         }
         # 设置镜像源
         registries : {
-          mirrors : {
-            "docker.io" : {
-              endpoints : ["https://docker.m.daocloud.io"]
-            }
-            "gcr.io" : {
-              endpoints : ["https://gcr.m.daocloud.io"]
-            }
-            "ghcr.io" : {
-              endpoints : ["https://ghcr.m.daocloud.io"]
-            }
-            "registry.k8s.io" : {
-              endpoints : ["https://k8s.m.daocloud.io"]
-            }
-          }
+          mirrors = var.image_mirrors
         }
         install : {
           disk : "/dev/sda"
-          image : "ghcr.io/siderolabs/installer:v1.11.2"
+          image : "ghcr.io/siderolabs/installer:${var.talos_version}"
           wipe : false
         }
         features : {
@@ -93,17 +70,7 @@ data "talos_machine_configuration" "control_plane" {
       },
       cluster : {
         apiServer : {
-          certSANs : sort(
-            distinct(
-              compact(
-                concat(
-                  [for instance in var.control_plane_instances : instance.private_ip],
-                  ["127.0.0.1", "::1", "localhost"],
-                  ["${var.cluster_endpoint}"],
-                )
-              )
-            )
-          )
+          certSANs : local.certSANs
         }
         discovery : {
           enabled : false
@@ -157,17 +124,7 @@ data "talos_machine_configuration" "worker" {
   config_patches = [
     yamlencode({
       machine : {
-        certSANs : sort(
-          distinct(
-            compact(
-              concat(
-                [for instance in var.control_plane_instances : instance.private_ip],
-                ["127.0.0.1", "::1", "localhost"],
-                ["${var.cluster_endpoint}"],
-              )
-            )
-          )
-        )
+        certSANs : local.certSANs
         network : {
           hostname : "ip-${replace(each.value.private_ip, ".", "-")}.cn-wuhan-1.compute.internal"
           interfaces : [
@@ -208,24 +165,11 @@ data "talos_machine_configuration" "worker" {
         }
         # 设置镜像源
         registries : {
-          mirrors : {
-            "docker.io" : {
-              endpoints : ["https://docker.m.daocloud.io"]
-            }
-            "gcr.io" : {
-              endpoints : ["https://gcr.m.daocloud.io"]
-            }
-            "ghcr.io" : {
-              endpoints : ["https://ghcr.m.daocloud.io"]
-            }
-            "registry.k8s.io" : {
-              endpoints : ["https://k8s.m.daocloud.io"]
-            }
-          }
+          mirrors = var.image_mirrors
         }
         install : {
           disk : "/dev/sda"
-          image : "ccr.ccs.tencentyun.com/scmtble/installer:v1.11.0"
+          image : "ghcr.io/siderolabs/installer:${var.talos_version}"
           wipe : false
         }
         features : {
